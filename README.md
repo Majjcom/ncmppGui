@@ -4,8 +4,8 @@
 
 ## 使用方法
 
-- 下载`Release`中的软件包
-- 解压
+- 下载[Release](https://github.com/Majjcom/ncmppGui/releases/latest)中的软件包
+- 使用压缩软件解压
 - 运行`bin`目录下的`ncmppGui.exe`（此处失败，请安装同一目录下的`vcredist_msvc2017_x64.exe`）
 - 选择输出路径
 - 拖入`ncm`文件
