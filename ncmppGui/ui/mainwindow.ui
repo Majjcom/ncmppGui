@@ -62,9 +62,6 @@
       </item>
       <item>
        <widget class="QListWidget_withDrop" name="input_listWidget">
-        <property name="acceptDrops">
-         <bool>true</bool>
-        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>

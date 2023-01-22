@@ -67,6 +67,7 @@ void MainWindow::doButtonClicked()
     this->ui->do_button->setEnabled(false);
     this->ui->dirChoose_button->setEnabled(false);
     this->ui->outDir_lineEdit->setReadOnly(true);
+    this->ui->input_listWidget->setDragDropMode(QListWidget::NoDragDrop);
 
     this->unlockThread = new Unlocker;
     this->unlockThread->setUp(this->ui->input_listWidget, out_file);
@@ -101,6 +102,7 @@ void MainWindow::threadFinished()
     this->ui->outDir_lineEdit->setReadOnly(false);
     this->ui->dirChoose_button->setEnabled(true);
     this->ui->do_button->setEnabled(true);
+    this->ui->input_listWidget->setDragDropMode(QListWidget::InternalMove);
 }
 
 MainWindow::~MainWindow()
