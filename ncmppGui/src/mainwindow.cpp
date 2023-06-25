@@ -17,10 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->connect(this->ui->dirChoose_button, &QToolButton::clicked,
-                  this, &MainWindow::fileButtonClicked);
-    this->connect(this->ui->do_button, &QPushButton::clicked,
-                  this, &MainWindow::doButtonClicked);
+    this->connect(this->ui->dirChoose_button, SIGNAL(clicked()),
+                  this, SLOT(fileButtonClicked()));
+    this->connect(this->ui->do_button, SIGNAL(clicked()),
+                  this, SLOT(doButtonClicked()));
 }
 
 void MainWindow::fileButtonClicked()
@@ -73,10 +73,10 @@ void MainWindow::doButtonClicked()
     this->unlockThread->setUp(this->ui->input_listWidget, out_file);
     this->unlockThread->start();
 
-    this->connect(this->unlockThread, &Unlocker::unlocked,
-                  this, &MainWindow::unlocked);
-    this->connect(this->unlockThread, &Unlocker::finished,
-                  this, &MainWindow::threadFinished);
+    this->connect(this->unlockThread, SIGNAL(unlocked(int, int)),
+                  this, SLOT(unlocked(int, int)));
+    this->connect(this->unlockThread, SIGNAL(finished()),
+                  this, SLOT(threadFinished()));
 
 
 }
@@ -89,10 +89,7 @@ void MainWindow::unlocked(int count, int total)
 
 void MainWindow::threadFinished()
 {
-    this->disconnect(this->unlockThread, &Unlocker::unlocked,
-                     this, &MainWindow::unlocked);
-    this->disconnect(this->unlockThread, &Unlocker::finished,
-                  this, &MainWindow::threadFinished);
+    this->disconnect(this->unlockThread);
 
     this->unlockThread->deleteLater();
     this->unlockThread = nullptr;

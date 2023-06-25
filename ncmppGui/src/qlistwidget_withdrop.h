@@ -1,7 +1,7 @@
 ﻿#ifndef QLISTWIDGET_WITHDROP_H
 #define QLISTWIDGET_WITHDROP_H
 
-#include <QtWidgets/QListWidget>
+#include <QListWidget>
 #include <QObject>
 #include <QWidget>
 

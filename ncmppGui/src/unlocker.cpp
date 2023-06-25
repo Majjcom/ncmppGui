@@ -23,7 +23,7 @@ void Unlocker::run()
         string src = file.toUtf8().toStdString();
         string tgt = this->out_dir.toUtf8().toStdString();
         ncm::ncmDump(src, tgt);
-        this->unlocked(i + 1, count);
+        emit this->unlocked(i + 1, count);
     }
     this->exit();
 }

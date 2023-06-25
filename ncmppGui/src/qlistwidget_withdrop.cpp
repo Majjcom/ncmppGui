@@ -55,6 +55,7 @@ QString QListWidget_withDrop::getNextFile()
     QListWidgetItem* item = this->takeItem(0);
     return item->text();
 }
+
 int QListWidget_withDrop::getFileCount()
 {
     return this->count();

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include "unlocker.h"
 
 QT_BEGIN_NAMESPACE
