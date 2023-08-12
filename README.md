@@ -2,6 +2,8 @@
 
 一个用C++编写的极速ncm转换工具。
 
+多线程命令行版本见[Majjcom/ncmpp](https://github.com/Majjcom/ncmpp)。
+
 ## 使用方法
 
 - 下载[Release](https://github.com/Majjcom/ncmppGui/releases/latest)中的软件包
