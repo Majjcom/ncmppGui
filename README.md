@@ -11,6 +11,14 @@
 - 拖入`ncm`文件
 - 点击转换即可
 
+## ✨✨Github访问慢的请看这里！！！✨✨
+
+- 国内蓝奏云下载：
+
+  - [Majjcom/ncmppGui](https://majjcom.lanzouy.com/b01x26kxg)
+
+  - 密码：dr4s
+
 ## 构建环境
 
 Windows 11 22H2
