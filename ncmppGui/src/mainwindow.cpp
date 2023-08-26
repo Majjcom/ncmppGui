@@ -4,12 +4,16 @@
 #include <string>
 #include "ncmdump.h"
 
+#include "getpath.h"
+
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QStringList>
 #include <QFileInfo>
 #include <QString>
 #include <QDebug>
 #include <QFile>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,21 +21,28 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->connect(this->ui->dirChoose_button, SIGNAL(clicked()),
-                  this, SLOT(fileButtonClicked()));
-    this->connect(this->ui->do_button, SIGNAL(clicked()),
-                  this, SLOT(doButtonClicked()));
+    this->connect(ui->dirChoose_button, SIGNAL(clicked()),
+        this, SLOT(fileButtonClicked())
+    );
+    this->connect(ui->do_button, SIGNAL(clicked()),
+        this, SLOT(doButtonClicked())
+    );
+    this->connect(ui->import_button, SIGNAL(clicked()),
+        this, SLOT(importButtonClicked())
+    );
 }
 
 void MainWindow::fileButtonClicked()
 {
-    QString get = QFileDialog::getExistingDirectory(this, QStringLiteral("输出目录"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+    QString get = QFileDialog::getExistingDirectory(
+        this, QStringLiteral("输出目录"),
+        get_home_path(),
+        QFileDialog::ShowDirsOnly
+        | QFileDialog::DontResolveSymlinks
+    );
     if (get.length() != 0)
     {
-        this->ui->outDir_lineEdit->setText(get);
+        ui->outDir_lineEdit->setText(get);
     }
 }
 
@@ -64,42 +75,65 @@ void MainWindow::doButtonClicked()
         return;
     }
 
-    this->ui->do_button->setEnabled(false);
-    this->ui->dirChoose_button->setEnabled(false);
-    this->ui->outDir_lineEdit->setReadOnly(true);
-    this->ui->input_listWidget->setDragDropMode(QListWidget::NoDragDrop);
+    ui->do_button->setEnabled(false);
+    ui->dirChoose_button->setEnabled(false);
+    ui->outDir_lineEdit->setReadOnly(true);
+    ui->input_listWidget->setDragDropMode(QListWidget::NoDragDrop);
 
-    this->unlockThread = new Unlocker;
-    this->unlockThread->setUp(this->ui->input_listWidget, out_file);
-    this->unlockThread->start();
+    unlockThread = new Unlocker;
+    unlockThread->setUp(this->ui->input_listWidget, out_file);
+    unlockThread->start();
 
-    this->connect(this->unlockThread, SIGNAL(unlocked(int, int)),
-                  this, SLOT(unlocked(int, int)));
-    this->connect(this->unlockThread, SIGNAL(finished()),
-                  this, SLOT(threadFinished()));
+    connect(this->unlockThread, SIGNAL(unlocked(int, int)),
+        this, SLOT(unlocked(int, int))
+    );
+    connect(this->unlockThread, SIGNAL(finished()),
+        this, SLOT(threadFinished())
+    );
 
 
 }
 
+void MainWindow::importButtonClicked()
+{
+    QString path = QFileDialog::getExistingDirectory(
+        this,
+        QStringLiteral("选择ncm文件所在的目录"),
+        get_home_path()
+    );
+
+    QDir root_dir(path);
+    QStringList files = root_dir.entryList(QDir::Files);
+    for (QString& name : files)
+    {
+        QFileInfo info(name);
+        if (info.suffix() == "ncm")
+        {
+            QString ab_path = root_dir.absoluteFilePath(name);
+            ui->input_listWidget->addFile(ab_path);
+        }
+    }
+}
+
 void MainWindow::unlocked(int count, int total)
 {
-    float v = float(count)/ float(total) * 100.0f;
-    this->ui->progressBar->setValue(int(v));
+    float v = float(count) / float(total) * 100.0f;
+    ui->progressBar->setValue(int(v));
 }
 
 void MainWindow::threadFinished()
 {
     this->disconnect(this->unlockThread);
 
-    this->unlockThread->deleteLater();
-    this->unlockThread = nullptr;
+    unlockThread->deleteLater();
+    unlockThread = nullptr;
 
     QMessageBox::information(this, QStringLiteral("完成"), QStringLiteral("解锁已完成"));
-    this->ui->progressBar->setValue(0);
-    this->ui->outDir_lineEdit->setReadOnly(false);
-    this->ui->dirChoose_button->setEnabled(true);
-    this->ui->do_button->setEnabled(true);
-    this->ui->input_listWidget->setDragDropMode(QListWidget::InternalMove);
+    ui->progressBar->setValue(0);
+    ui->outDir_lineEdit->setReadOnly(false);
+    ui->dirChoose_button->setEnabled(true);
+    ui->do_button->setEnabled(true);
+    ui->input_listWidget->setDragDropMode(QListWidget::InternalMove);
 }
 
 MainWindow::~MainWindow()

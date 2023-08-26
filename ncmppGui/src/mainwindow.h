@@ -19,6 +19,7 @@ public:
 protected slots:
     void fileButtonClicked();
     void doButtonClicked();
+    void importButtonClicked();
     void unlocked(int count, int total);
     void threadFinished();
 

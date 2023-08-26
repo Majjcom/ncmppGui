@@ -51,6 +51,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QPushButton" name="import_button">
+        <property name="text">
+         <string>从文件夹导入ncm文件</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>将ncm文件拖拽至下方</string>

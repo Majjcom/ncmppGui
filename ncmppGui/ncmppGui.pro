@@ -1,4 +1,5 @@
 QT       += core gui
+android: QT += androidextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +23,8 @@ SOURCES += \
     src/ncmdump.cpp \
     src/pkcs7.cpp \
     src/qlistwidget_withdrop.cpp \
-    src/unlocker.cpp
+    src/unlocker.cpp \
+    src/getpath.cpp
 
 HEADERS += \
     src/base64.h \
@@ -30,13 +32,14 @@ HEADERS += \
     src/ncmdump.h \
     src/pkcs7.h \
     src/qlistwidget_withdrop.h \
-    src/unlocker.h
+    src/unlocker.h \
+    src/getpath.h
 
 FORMS += \
     ui/mainwindow.ui
 
-QMAKE_CXXFLAGS += \
-    -std:c++17
+#QMAKE_CXXFLAGS += \
+#    -std:c++17
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -53,3 +56,15 @@ DEPENDPATH += $$PWD/ext/include
 win32:!win32-g++: PRE_TARGETDEPS += \
     $$PWD/ext/lib/libssl_static.lib \
     $$PWD/ext/lib/libcrypto_static.lib
+android: include(E:/Android/android-sdk-windows/android_openssl/openssl_use.pri)
+
+android: DISTFILES += \
+    android/AndroidManifest.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew \
+    android/gradlew.bat \
+    android/res/values/libs.xml
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

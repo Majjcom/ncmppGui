@@ -12,6 +12,7 @@ public:
     explicit QListWidget_withDrop(QWidget *parent = nullptr);
     QString getNextFile();
     int getFileCount();
+    void addFile(QString file);
 
 protected:
     void dragEnterEvent(QDragEnterEvent* ev) override;

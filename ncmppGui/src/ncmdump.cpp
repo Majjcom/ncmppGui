@@ -1,6 +1,13 @@
 ﻿
+#include <QFileInfo>
+#include <QtCore>
+#include <QFile>
+#include <QDir>
+
 #include "ncmdump.h"
+#ifndef Q_OS_ANDROID
 #include <filesystem>
+#endif
 #include <sstream>
 #include <fstream>
 #include <memory>
@@ -27,13 +34,18 @@ void ncm::ncmDump(string path_, string out_path_)
     hex2str(core_hex, core_key);
     hex2str(mata_hex, mata_key);
 
+#ifdef Q_OS_ANDROID
+    ifstream fp;
+    fp.open(path_, ios::in | ios::binary);
+    fp.seekg(10, ios::cur);     // 8 + 2
+#else
     using filesystem::path;
 
     ifstream fp;
     path raw_path = filesystem::u8path(path_);
     fp.open(raw_path, ios::in | ios::binary);
     fp.seekg(10, ios::cur);     // 8 + 2
-
+#endif
     
     unsigned char* key_len_bin = new unsigned char[4];
     fp.read((char*)key_len_bin, 4);
@@ -143,9 +155,14 @@ void ncm::ncmDump(string path_, string out_path_)
     fp.seekg(mata_len, ios::cur);
 
     string extname = '.' + string(dom["format"].GetString());
-
+#ifdef Q_OS_ANDROID
+    QFileInfo info(QString::fromUtf8(path_.c_str()));
+    QString out_name = info.baseName() + extname.c_str();
+    QDir out_p(out_path_.c_str());
+    string tgt = out_p.absoluteFilePath(out_name).toUtf8().toStdString();
+#else
     path tgt = filesystem::u8path(out_path_) / filesystem::u8path(raw_path.stem().u8string() + extname);
-
+#endif
     delete pdom;
 
     ofstream of;
