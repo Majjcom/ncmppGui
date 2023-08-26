@@ -31,6 +31,6 @@
 
 Windows 11 22H2
 
-GUI: Qt 5.15.9 自构建static版
+GUI: Qt 5.15.10 自构建static版
 
 kit: msvc2022_x64
