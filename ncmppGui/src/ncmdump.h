@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
+#include <QString>
 
 namespace ncm
 {
-    void ncmDump(std::string path, std::string outPath);
+    void ncmDump(QString path, QString outPath);
 }

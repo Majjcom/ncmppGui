@@ -1,16 +1,14 @@
 ﻿
 #include <QFileInfo>
+#include <QIODevice>
 #include <QtCore>
+#include <QDebug>
 #include <QFile>
+#include <QUrl>
 #include <QDir>
 
 #include "ncmdump.h"
-#ifndef Q_OS_ANDROID
-#include <filesystem>
-#endif
 #include <sstream>
-#include <fstream>
-#include <memory>
 #include "openssl/aes.h"
 #include "rapidjson/document.h"
 #include "base64.h"
@@ -25,7 +23,7 @@ static char mata_hex[] = "2331346C6A6B5F215C5D2630553C2728";
 void hex2str(const char* src_, unsigned char* tgt_);
 unsigned int little_int(const unsigned char* src_);
 
-void ncm::ncmDump(string path_, string out_path_)
+void ncm::ncmDump(QString path_, QString out_path_)
 {
     unsigned char* core_key = new unsigned char[16];
     unsigned char* mata_key = new unsigned char[16];
@@ -34,18 +32,9 @@ void ncm::ncmDump(string path_, string out_path_)
     hex2str(core_hex, core_key);
     hex2str(mata_hex, mata_key);
 
-#ifdef Q_OS_ANDROID
-    ifstream fp;
-    fp.open(path_, ios::in | ios::binary);
-    fp.seekg(10, ios::cur);     // 8 + 2
-#else
-    using filesystem::path;
-
-    ifstream fp;
-    path raw_path = filesystem::u8path(path_);
-    fp.open(raw_path, ios::in | ios::binary);
-    fp.seekg(10, ios::cur);     // 8 + 2
-#endif
+    QFile fp(path_);
+    fp.open(QIODevice::ReadOnly);
+    fp.seek(fp.pos() + 10);     // 8 + 2
     
     unsigned char* key_len_bin = new unsigned char[4];
     fp.read((char*)key_len_bin, 4);
@@ -145,32 +134,28 @@ void ncm::ncmDump(string path_, string out_path_)
     rapidjson::Document& dom = *pdom;
     dom.Parse(mata_str.c_str(), mata_str.length());
 
-    fp.seekg(9, ios::cur);      // 4 + 5
+    fp.seek(fp.pos() + 9);      // 4 + 5
 
     mata_len_bin = new unsigned char[4];
     fp.read((char*)mata_len_bin, 4);
     mata_len = little_int(mata_len_bin);
     delete[] mata_len_bin;
 
-    fp.seekg(mata_len, ios::cur);
+    fp.seek(fp.pos() + mata_len);
 
     string extname = '.' + string(dom["format"].GetString());
-#ifdef Q_OS_ANDROID
-    QFileInfo info(QString::fromUtf8(path_.c_str()));
+    QFileInfo info(path_);
     QString out_name = info.baseName() + extname.c_str();
-    QDir out_p(out_path_.c_str());
-    string tgt = out_p.absoluteFilePath(out_name).toUtf8().toStdString();
-#else
-    path tgt = filesystem::u8path(out_path_) / filesystem::u8path(raw_path.stem().u8string() + extname);
-#endif
+    QDir out_p(out_path_);
+    QString tgt = out_p.absoluteFilePath(out_name);
     delete pdom;
 
-    ofstream of;
-    of.open(tgt, ios::out | ios::binary);
+    QFile of(tgt);
+    of.open(QIODevice::WriteOnly);
 
     unsigned char* buff = new unsigned char[0x8000];
-    fp.read((char*)buff, 0x8000);
-    unsigned int buff_len = (unsigned int)fp.gcount();
+
+    unsigned int buff_len = (unsigned int)fp.read((char*)buff, 0x8000);
     while (buff_len)
     {
         for (unsigned int i = 1; i <= buff_len; i++)
@@ -179,8 +164,7 @@ void ncm::ncmDump(string path_, string out_path_)
             buff[i - 1] ^= key_box[(key_box[j] + key_box[(key_box[j] + j) & 0xff]) & 0xff];
         }
         of.write((char*)buff, buff_len);
-        fp.read((char*)buff, 0x8000);
-        buff_len = (unsigned int)fp.gcount();
+        buff_len = (unsigned int)fp.read((char*)buff, 0x8000);
     }
     of.close();
     fp.close();

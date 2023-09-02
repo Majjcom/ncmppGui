@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include <string>
-#include "ncmdump.h"
 
 #include "getpath.h"
 
@@ -39,7 +38,11 @@ void MainWindow::fileButtonClicked()
         get_home_path(),
         QFileDialog::ShowDirsOnly
         | QFileDialog::DontResolveSymlinks
+#ifdef Q_OS_ANDROID
+        | QFileDialog::DontUseNativeDialog
+#endif
     );
+
     if (get.length() != 0)
     {
         ui->outDir_lineEdit->setText(get);
@@ -100,6 +103,9 @@ void MainWindow::importButtonClicked()
         this,
         QStringLiteral("选择ncm文件所在的目录"),
         get_home_path()
+#ifdef Q_OS_ANDROID
+        ,QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog
+#endif
     );
 
     QDir root_dir(path);

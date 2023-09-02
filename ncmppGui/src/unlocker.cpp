@@ -20,9 +20,7 @@ void Unlocker::run()
     {
         using std::string;
         QString file = this->list_obj->getNextFile();
-        string src = file.toUtf8().toStdString();
-        string tgt = this->out_dir.toUtf8().toStdString();
-        ncm::ncmDump(src, tgt);
+        ncm::ncmDump(file, this->out_dir);
         emit this->unlocked(i + 1, count);
     }
     this->exit();

@@ -1,17 +1,17 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:7.4.2'
     }
 }
 
 repositories {
     google()
-    jcenter()
+    maven { url 'https://maven.aliyun.com/repository/jcenter' }
 }
 
 apply plugin: 'com.android.application'
@@ -36,7 +36,7 @@ android {
 
     compileSdkVersion androidCompileSdkVersion.toInteger()
 
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '31.0.0'
 
     sourceSets {
         main {
