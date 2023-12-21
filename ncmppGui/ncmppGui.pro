@@ -24,7 +24,8 @@ SOURCES += \
     src/pkcs7.cpp \
     src/qlistwidget_withdrop.cpp \
     src/unlocker.cpp \
-    src/getpath.cpp
+    src/getpath.cpp \
+    src/unlockrunner.cpp
 
 HEADERS += \
     src/base64.h \
@@ -33,7 +34,8 @@ HEADERS += \
     src/pkcs7.h \
     src/qlistwidget_withdrop.h \
     src/unlocker.h \
-    src/getpath.h
+    src/getpath.h \
+    src/unlockrunner.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -56,7 +58,7 @@ DEPENDPATH += $$PWD/ext/include
 win32:!win32-g++: PRE_TARGETDEPS += \
     $$PWD/ext/lib/libssl_static.lib \
     $$PWD/ext/lib/libcrypto_static.lib
-android: include(E:/Android/android-sdk-windows/android_openssl/openssl_use.pri)
+android: include(E:/Android/android-sdk-windows/android_openssl/openssl_use_armv7.pri)
 
 android: DISTFILES += \
     android/AndroidManifest.xml \

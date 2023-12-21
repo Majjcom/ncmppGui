@@ -1,8 +1,11 @@
 ﻿#include "unlocker.h"
 
+#include "unlockrunner.h"
 #include "ncmdump.h"
 
 Unlocker::Unlocker(QObject *parent)
+    : pool(new QThreadPool(this))
+    , unlocked_count(0)
 {
     this->setParent(parent);
 }
@@ -15,13 +18,27 @@ void Unlocker::setUp(QListWidget_withDrop* list_obj_, QString out_dir_)
 
 void Unlocker::run()
 {
-    int count = this->list_obj->getFileCount();
+    count = this->list_obj->getFileCount();
     for (int i = 0; i < count; i++)
     {
-        using std::string;
         QString file = this->list_obj->getNextFile();
-        ncm::ncmDump(file, this->out_dir);
-        emit this->unlocked(i + 1, count);
+        UnlockRunner* runner = new UnlockRunner(file, this->out_dir);
+        connect(runner, SIGNAL(finish()), this, SLOT(runner_finished()));
+        bool ok = false;
+        while (!ok)
+        {
+            ok = pool->tryStart(runner);
+        }
+//        pool->start(runner);
+
+//        ncm::ncmDump(file, this->out_dir);
+//        emit this->unlocked(i + 1, count);
     }
     this->exit();
+}
+
+void Unlocker::runner_finished()
+{
+    unlocked_count++;
+    emit unlocked(unlocked_count, count);
 }
