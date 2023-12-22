@@ -41,11 +41,7 @@ void QListWidget_withDrop::dropEvent(QDropEvent* ev)
             {
                 continue;
             }
-            QList<QListWidgetItem*> find = this->findItems(name, Qt::MatchExactly);
-            if (find.empty())
-            {
-                this->addItem(name);
-            }
+            this->addFile(name);
         }
     }
 }
@@ -53,7 +49,9 @@ void QListWidget_withDrop::dropEvent(QDropEvent* ev)
 QString QListWidget_withDrop::getNextFile()
 {
     QListWidgetItem* item = this->takeItem(0);
-    return item->text();
+    QString t = item->text();
+    delete item;
+    return t;
 }
 
 int QListWidget_withDrop::getFileCount()

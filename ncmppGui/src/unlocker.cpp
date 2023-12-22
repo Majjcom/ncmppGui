@@ -29,11 +29,8 @@ void Unlocker::run()
         {
             ok = pool->tryStart(runner);
         }
-//        pool->start(runner);
-
-//        ncm::ncmDump(file, this->out_dir);
-//        emit this->unlocked(i + 1, count);
     }
+    pool->waitForDone();
     this->exit();
 }
 
