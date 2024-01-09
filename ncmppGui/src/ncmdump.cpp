@@ -145,7 +145,7 @@ void ncm::ncmDump(QString path_, QString out_path_)
 
     string extname = '.' + string(dom["format"].GetString());
     QFileInfo info(path_);
-    QString out_name = info.baseName() + extname.c_str();
+    QString out_name = info.completeBaseName() + extname.c_str();
     QDir out_p(out_path_);
     QString tgt = out_p.absoluteFilePath(out_name);
     delete pdom;
