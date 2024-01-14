@@ -10,6 +10,8 @@
 #include <QList>
 #include <QUrl>
 
+#include "mainwindow.h"
+
 QListWidget_withDrop::QListWidget_withDrop(QWidget *parent)
 {
     this->setParent(parent);
@@ -43,6 +45,7 @@ void QListWidget_withDrop::dropEvent(QDropEvent* ev)
             }
             this->addFile(name);
         }
+        emit dropEnd();
     }
 }
 
@@ -62,8 +65,9 @@ int QListWidget_withDrop::getFileCount()
 void QListWidget_withDrop::addFile(QString file)
 {
     QList<QListWidgetItem*> find = this->findItems(file, Qt::MatchExactly);
-    if (find.empty())
+    if (!find.empty())
     {
-        this->addItem(file);
+        return;
     }
+    this->addItem(file);
 }

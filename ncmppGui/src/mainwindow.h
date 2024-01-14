@@ -16,6 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void updateProgressbar();
+
 protected slots:
     void fileButtonClicked();
     void doButtonClicked();

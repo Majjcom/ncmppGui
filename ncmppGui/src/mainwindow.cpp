@@ -14,6 +14,9 @@
 #include <QFile>
 #include <QDir>
 
+#include <lib/qtmaterialstyle.h>
+#include <lib/qtmaterialtheme.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -29,6 +32,18 @@ MainWindow::MainWindow(QWidget *parent)
     this->connect(ui->import_button, SIGNAL(clicked()),
         this, SLOT(importButtonClicked())
     );
+
+    connect(ui->input_listWidget, SIGNAL(dropEnd()), this, SLOT(updateProgressbar()));
+
+    QtMaterialTheme* theme = new QtMaterialTheme;
+    theme->setColor("text", Material::red500);
+    theme->setColor("primary1", Material::red300);
+
+    QtMaterialStyle::instance().setTheme(theme);
+
+    updateProgressbar();
+
+    ui->import_button->setFocus();
 }
 
 void MainWindow::fileButtonClicked()
@@ -55,12 +70,14 @@ void MainWindow::doButtonClicked()
     if (!QFile(out_file).exists())
     {
         QMessageBox::warning(this, QStringLiteral("错误"), QStringLiteral("输出目录不存在"));
+        ui->outDir_lineEdit->setFocus();
         return;
     }
 
     if (!QFileInfo(out_file).isDir())
     {
         QMessageBox::warning(this, QStringLiteral("错误"), QStringLiteral("不是目录"));
+        ui->outDir_lineEdit->setFocus();
         return;
     }
 
@@ -69,6 +86,7 @@ void MainWindow::doButtonClicked()
     if (count == 0)
     {
         QMessageBox::warning(this, QStringLiteral("提醒"), QStringLiteral("没有输入的文件"));
+        ui->import_button->setFocus();
         return;
     }
 
@@ -82,6 +100,7 @@ void MainWindow::doButtonClicked()
     ui->dirChoose_button->setEnabled(false);
     ui->outDir_lineEdit->setReadOnly(true);
     ui->input_listWidget->setDragDropMode(QListWidget::NoDragDrop);
+    ui->progressBar->setProgressType(Material::DeterminateProgress);
 
     unlockThread = new Unlocker;
     unlockThread->setUp(this->ui->input_listWidget, out_file);
@@ -108,6 +127,11 @@ void MainWindow::importButtonClicked()
 #endif
     );
 
+    if (!QFileInfo(path).exists())
+    {
+        return;
+    }
+
     QDir root_dir(path);
     QStringList files = root_dir.entryList(QDir::Files);
     for (QString& name : files)
@@ -119,6 +143,7 @@ void MainWindow::importButtonClicked()
             ui->input_listWidget->addFile(ab_path);
         }
     }
+    updateProgressbar();
 }
 
 void MainWindow::unlocked(int count, int total)
@@ -140,6 +165,20 @@ void MainWindow::threadFinished()
     ui->dirChoose_button->setEnabled(true);
     ui->do_button->setEnabled(true);
     ui->input_listWidget->setDragDropMode(QListWidget::InternalMove);
+
+    updateProgressbar();
+}
+
+void MainWindow::updateProgressbar()
+{
+    if (ui->input_listWidget->count())
+    {
+        ui->progressBar->setProgressType(Material::IndeterminateProgress);
+    }
+    else
+    {
+        ui->progressBar->setProgressType(Material::DeterminateProgress);
+    }
 }
 
 MainWindow::~MainWindow()

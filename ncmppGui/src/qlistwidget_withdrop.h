@@ -19,7 +19,7 @@ protected:
     void dropEvent(QDropEvent* ev) override;
 
 signals:
-
+    void dropEnd();
 };
 
 #endif // QLISTWIDGET_WITHDROP_H

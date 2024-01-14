@@ -16,11 +16,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include(material-ui/material-ui.pri)
+
 SOURCES += \
     main.cpp \
-    src/base64.cpp \
     src/mainwindow.cpp \
     src/ncmdump.cpp \
+    src/base64.cpp \
     src/pkcs7.cpp \
     src/qlistwidget_withdrop.cpp \
     src/unlocker.cpp \
@@ -54,6 +56,8 @@ win32: LIBS += \
 
 INCLUDEPATH += $$PWD/ext/include
 DEPENDPATH += $$PWD/ext/include
+
+INCLUDEPATH += $$PWD/material-ui
 
 win32:!win32-g++: PRE_TARGETDEPS += \
     $$PWD/ext/lib/libssl_static.lib \
