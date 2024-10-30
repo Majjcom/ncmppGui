@@ -15,6 +15,14 @@
 - 拖入`ncm`文件
 - 点击转换即可
 
+## 注意
+
+本工具解密的歌曲文件可能会吞掉音乐的封面等元数据，可以使用工具`musictag`来补全音乐元数据。
+
+`musictag`作者博客：[https://www.cnblogs.com/vinlxc/p/11347744.html](https://www.cnblogs.com/vinlxc/p/11347744.html)
+
+开源docker网页版：[https://github.com/xhongc/music-tag-web](https://github.com/xhongc/music-tag-web)
+
 ## ✨✨Github访问慢的请看这里！！！✨✨
 
 - 国内蓝奏云下载：
