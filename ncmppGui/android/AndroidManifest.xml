@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<manifest package="site.majjcom.ncmppgui" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.3.0" android:versionCode="100300000" android:installLocation="auto">
+<manifest package="site.majjcom.ncmppgui" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.3.1" android:versionCode="100300100" android:installLocation="auto">
 
 
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.

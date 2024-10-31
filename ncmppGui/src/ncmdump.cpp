@@ -7,6 +7,8 @@
 #include <QUrl>
 #include <QDir>
 
+#include <cstring>
+
 #include "ncmdump.h"
 #include <sstream>
 #include "openssl/aes.h"
@@ -20,10 +22,119 @@ using namespace std;
 static char core_hex[] = "687A4852416D736F356B496E62617857";
 static char mata_hex[] = "2331346C6A6B5F215C5D2630553C2728";
 
+enum FileType
+{
+    NcmCrypt = 0,
+    Mp3,
+    Flac,
+    None,
+};
+
 void hex2str(const char* src_, unsigned char* tgt_);
 unsigned int little_int(const unsigned char* src_);
+FileType getFileType(QString path_);
+void decodeNcm(QString path_, QString out_path_);
+int matchStr(char* item, const char* compaers[], int count);
+void copyFileWithExt(QString path_, QString out_path_, FileType type_);
 
 void ncm::ncmDump(QString path_, QString out_path_)
+{
+    FileType ft = getFileType(path_);
+    switch (ft)
+    {
+    case NcmCrypt:
+        decodeNcm(path_, out_path_);
+        break;
+    case Mp3:
+    case Flac:
+        copyFileWithExt(path_, out_path_, ft);
+        break;
+    case None:
+    default:
+        break;
+    }
+}
+
+int matchStr(char* item, const char* compaers[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        if (strcmp(item, compaers[i]) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+FileType getFileType(QString path_)
+{
+    const char* checkbuffer[] = {
+        "CTENFDAM",
+        "ID3",
+        "fLaC",
+    };
+    int size = sizeof(checkbuffer) / sizeof(*checkbuffer);
+    int minl = strlen(checkbuffer[0]);
+    int maxl = strlen(checkbuffer[0]);
+
+    for (int i = 1; i < size; i++)
+    {
+        int tl = strlen(checkbuffer[i]);
+        if (tl < minl)
+        {
+            minl = tl;
+        }
+        if (tl > maxl)
+        {
+            maxl = tl;
+        }
+    }
+
+    QFile fp(path_);
+    fp.open(QIODevice::ReadOnly);
+    char* buffer = new char[maxl + 1];
+    memset(buffer, 0, maxl + 1);
+    int lenb = fp.read(buffer, minl);
+    int res = matchStr(buffer, (const char**)checkbuffer, size);
+
+    while (res < 0 && lenb < maxl)
+    {
+        lenb += fp.read(buffer + lenb, 1);
+        res = matchStr(buffer, (const char**)checkbuffer, size);
+    }
+
+    delete[] buffer;
+    fp.close();
+
+    return (FileType)res;
+}
+
+void copyFileWithExt(QString path_, QString out_path_, FileType type_)
+{
+    QFileInfo info(path_);
+    QString extname = "";
+
+    switch (type_)
+    {
+    case Mp3:
+        extname = ".mp3";
+        break;
+    case Flac:
+        extname = ".flac";
+        break;
+    default:
+        break;
+    }
+
+    QString out_name = info.completeBaseName() + extname;
+    QDir out_dir(out_path_);
+    QString out_path = out_dir.filePath(out_name);
+
+    QFile::copy(path_, out_path);
+}
+
+void decodeNcm(QString path_, QString out_path_)
 {
     unsigned char* core_key = new unsigned char[16];
     unsigned char* mata_key = new unsigned char[16];

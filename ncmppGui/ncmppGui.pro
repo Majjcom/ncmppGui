@@ -62,7 +62,7 @@ INCLUDEPATH += $$PWD/material-ui
 win32:!win32-g++: PRE_TARGETDEPS += \
     $$PWD/ext/lib/libssl_static.lib \
     $$PWD/ext/lib/libcrypto_static.lib
-android: include(E:/Android/android-sdk-windows/android_openssl/openssl_use_armv7.pri)
+android: include(E:/Android/android-sdk-windows/android_openssl/openssl_use_armv8.pri)
 
 android: DISTFILES += \
     android/AndroidManifest.xml \
@@ -74,3 +74,4 @@ android: DISTFILES += \
     android/res/values/libs.xml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+android: include(E:/Android/android-sdk-windows/android_openssl/openssl.pri)
