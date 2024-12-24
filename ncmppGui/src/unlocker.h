@@ -12,6 +12,7 @@ class Unlocker : public QThread
 public:
     explicit Unlocker(QObject* parent = nullptr);
     void setUp(QListWidget_withDrop* list_obj_, QString out_dir_);
+    void setMaxThreadCount(int count);
 
 protected:
     void run() override;

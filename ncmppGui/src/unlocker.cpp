@@ -16,6 +16,11 @@ void Unlocker::setUp(QListWidget_withDrop* list_obj_, QString out_dir_)
     this->out_dir = out_dir_;
 }
 
+void Unlocker::setMaxThreadCount(int count)
+{
+    this->pool->setMaxThreadCount(count);
+}
+
 void Unlocker::run()
 {
     count = this->list_obj->getFileCount();

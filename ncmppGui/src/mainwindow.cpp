@@ -1,8 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <string>
-
 #include "getpath.h"
 
 #include <QMessageBox>
@@ -13,6 +11,8 @@
 #include <QDebug>
 #include <QFile>
 #include <QDir>
+
+#include <thread>
 
 #include <lib/qtmaterialstyle.h>
 #include <lib/qtmaterialtheme.h>
@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     this->connect(ui->import_button, SIGNAL(clicked()),
         this, SLOT(importButtonClicked())
     );
+    this->connect(ui->resetThreadCount_button, SIGNAL(clicked()),
+        this, SLOT(resetThreadCountButtonClicked())
+    );
 
     connect(ui->input_listWidget, SIGNAL(dropEnd()), this, SLOT(updateProgressbar()));
 
@@ -44,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateProgressbar();
 
     ui->import_button->setFocus();
+    ui->spin_threadCount->setValue(std::thread::hardware_concurrency());
 }
 
 void MainWindow::fileButtonClicked()
@@ -103,6 +107,7 @@ void MainWindow::doButtonClicked()
     ui->progressBar->setProgressType(Material::DeterminateProgress);
 
     unlockThread = new Unlocker;
+    unlockThread->setMaxThreadCount(this->ui->spin_threadCount->value());
     unlockThread->setUp(this->ui->input_listWidget, out_file);
     unlockThread->start();
 
@@ -144,6 +149,11 @@ void MainWindow::importButtonClicked()
         }
     }
     updateProgressbar();
+}
+
+void MainWindow::resetThreadCountButtonClicked()
+{
+    ui->spin_threadCount->setValue(std::thread::hardware_concurrency());
 }
 
 void MainWindow::unlocked(int count, int total)

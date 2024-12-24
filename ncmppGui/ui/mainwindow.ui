@@ -55,6 +55,46 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>最大线程数</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spin_threadCount">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QtMaterialFlatButton" name="resetThreadCount_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>设为本机线程数</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QtMaterialFlatButton" name="import_button">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -152,6 +192,9 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
  <tabstops>
   <tabstop>outDir_lineEdit</tabstop>
   <tabstop>dirChoose_button</tabstop>
+  <tabstop>spin_threadCount</tabstop>
+  <tabstop>resetThreadCount_button</tabstop>
+  <tabstop>import_button</tabstop>
   <tabstop>input_listWidget</tabstop>
   <tabstop>do_button</tabstop>
  </tabstops>
