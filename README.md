@@ -41,8 +41,8 @@
 
 ## 构建环境
 
-Windows 11 22H2
+Windows 11 23H2
 
-GUI: Qt 5.15.11
+GUI: Qt 5.15.14
 
 kit: msvc2022_x64
