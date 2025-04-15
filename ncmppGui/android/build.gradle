@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        jcenter()
     }
 
     dependencies {
@@ -11,7 +11,7 @@ buildscript {
 
 repositories {
     google()
-    maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    jcenter()
 }
 
 apply plugin: 'com.android.application'
@@ -35,8 +35,11 @@ android {
      *******************************************************/
 
     compileSdkVersion androidCompileSdkVersion.toInteger()
+    buildToolsVersion androidBuildToolsVersion
+    ndkVersion androidNdkVersion
 
-    buildToolsVersion '31.0.0'
+    // Extract native libraries from the APK
+    packagingOptions.jniLibs.useLegacyPackaging true
 
     sourceSets {
         main {
@@ -51,6 +54,15 @@ android {
        }
     }
 
+    tasks.withType(JavaCompile) {
+        options.incremental = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -61,6 +73,8 @@ android {
     }
 
     defaultConfig {
-        resConfigs "en"
+        resConfig "en"
+        minSdkVersion = qtMinSdkVersion
+        targetSdkVersion = qtTargetSdkVersion
     }
 }

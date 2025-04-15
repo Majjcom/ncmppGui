@@ -74,4 +74,9 @@ android: DISTFILES += \
     android/res/values/libs.xml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
-android: include(E:/Android/android-sdk-windows/android_openssl/openssl.pri)
+#android: include(E:/Android/android-sdk-windows/android_openssl/openssl.pri)
+android: ANDROID_MIN_SDK_VERSION = 28
+android: ANDROID_TARGET_SDK_VERSION = 31
+
+DISTFILES += \
+    android/gradle.properties

@@ -110,7 +110,7 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>将ncm文件拖拽至下方</string>
+         <string>或将ncm文件拖拽至下方</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

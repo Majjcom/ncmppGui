@@ -17,23 +17,33 @@
 #include <lib/qtmaterialstyle.h>
 #include <lib/qtmaterialtheme.h>
 
+#define LINEEDIT_RED_STYLE "QLineEdit{color: rgb(255, 0, 0);}"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    this->connect(ui->dirChoose_button, SIGNAL(clicked()),
+    connect(
+        ui->dirChoose_button, SIGNAL(clicked()),
         this, SLOT(fileButtonClicked())
     );
-    this->connect(ui->do_button, SIGNAL(clicked()),
+    connect(
+        ui->do_button, SIGNAL(clicked()),
         this, SLOT(doButtonClicked())
     );
-    this->connect(ui->import_button, SIGNAL(clicked()),
+    connect(
+        ui->import_button, SIGNAL(clicked()),
         this, SLOT(importButtonClicked())
     );
-    this->connect(ui->resetThreadCount_button, SIGNAL(clicked()),
+    connect(
+        ui->resetThreadCount_button, SIGNAL(clicked()),
         this, SLOT(resetThreadCountButtonClicked())
+    );
+    connect(
+        ui->outDir_lineEdit, SIGNAL(textChanged(QString)),
+        this, SLOT(outputDirChanged(QString))
     );
 
     connect(ui->input_listWidget, SIGNAL(dropEnd()), this, SLOT(updateProgressbar()));
@@ -132,13 +142,20 @@ void MainWindow::importButtonClicked()
 #endif
     );
 
-    if (!QFileInfo(path).exists())
+    if (path.isEmpty())
     {
+        return;
+    }
+
+    if (!QFileInfo::exists(path))
+    {
+        QMessageBox::critical(this, "错误", "目录不存在");
         return;
     }
 
     QDir root_dir(path);
     QStringList files = root_dir.entryList(QDir::Files);
+
     for (QString& name : files)
     {
         QFileInfo info(name);
@@ -181,7 +198,7 @@ void MainWindow::threadFinished()
 
 void MainWindow::updateProgressbar()
 {
-    if (ui->input_listWidget->count())
+    if (ui->input_listWidget->count() && !ui->outDir_lineEdit->text().isEmpty())
     {
         ui->progressBar->setProgressType(Material::IndeterminateProgress);
     }
@@ -189,6 +206,21 @@ void MainWindow::updateProgressbar()
     {
         ui->progressBar->setProgressType(Material::DeterminateProgress);
     }
+}
+
+void MainWindow::outputDirChanged(const QString& text)
+{
+    QString new_style = "";
+    if (!QFile(text).exists())
+    {
+        new_style = LINEEDIT_RED_STYLE;
+    }
+    if (!QFileInfo(text).isDir() && new_style.isEmpty())
+    {
+        new_style = LINEEDIT_RED_STYLE;
+    }
+    ui->outDir_lineEdit->setStyleSheet(new_style);
+    updateProgressbar();
 }
 
 MainWindow::~MainWindow()

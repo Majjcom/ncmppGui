@@ -26,6 +26,7 @@ protected slots:
     void resetThreadCountButtonClicked();
     void unlocked(int count, int total);
     void threadFinished();
+    void outputDirChanged(const QString& text);
 
 private:
     Ui::MainWindow *ui;
