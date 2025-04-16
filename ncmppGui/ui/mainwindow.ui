@@ -26,8 +26,8 @@
    <string>ncmppGui</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);
-font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
+   <string notr="true">QMainWindow&gt;.QWidget{background-color: rgb(255, 255, 255);}
+*{font: 11pt &quot;HarmonyOS Sans SC&quot;;}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
